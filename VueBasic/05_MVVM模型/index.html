@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="../vue.js"></script>
+</head>
+<body>
+
+    <!--  
+        - M 对应data中的数据
+        - V 模板代码
+        - VM 视图模型：Vue实例对象
+            - DOM Listeners
+            - Data Bindings
+
+        发现：
+            - data中所有的对象都出现在vm上
+    -->
+
+    <!-- View -->
+    <div id="root">
+        <h1>学校名称：{{name}}</h1>
+        <h1>学校地址：{{address}}</h1>
+        <h1>测试1：{{1 + 1}}</h1>
+    </div>
+
+    <script>
+        Vue.config.productionTip = false;
+
+        /* ViewModel ~ vm */
+        const vm = new Vue({
+            el: "#root",
+            data: {
+                /* Model */
+                name: '尚硅谷',
+                address: "北京"
+            }
+        })
+        console.log(vm);
+    </script>
+</body>
+</html>

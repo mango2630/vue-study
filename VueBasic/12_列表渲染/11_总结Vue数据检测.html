@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue检测数据改变的原理</title>
+    <script src="../vue.js"></script>
+</head>
+<body>
+    <!--  
+        Vue监视数据的原理：
+        【看截图】
+
+        数据劫持！
+        Object.definePropoty???
+    -->
+    <div id="root">
+        <h2>{{student.name}}</h2>
+        <h2>{{student.age}}</h2>
+        <h2 v-if="student.sex" >{{student.sex}}</h2>
+        
+        <button @click="student.age ++">年龄+1</button><br>
+        <button @click="addSex">添加性别属性，默认值：男</button><br>
+        <button @click="student.sex = '女' ">修改性别</button><br>
+        <button @click="addFriend">在列表首位添加一个朋友</button><br>
+        <button @click="modifyName">修改第一个朋友的名字为：张三</button><br>
+        <button @click="modifyHobby">修改一个爱好</button><br>
+        <button @click="addHobby">添加一个爱好</button><br>
+        <button @click="filterHobby">过滤爱好singing</button><br>
+        <hr>
+
+        <h3>朋友们</h3>
+        <ul>
+            <li v-for="f in student.friends" :key="f.id">{{f.name}}</li>
+        </ul>
+        <hr>
+
+        <h3>爱好</h3>
+        <ul>
+            <li v-for="(h, index) in student.hobby" :key="index">{{h}}</li>
+        </ul>
+    </div>
+
+    <script>
+        Vue.config.productionTip = false;
+
+        const vm = new Vue({
+            el: "#root",
+            data: {
+                student: {
+                    name: 'tom',
+                    age: 13,
+                    hobby: ['baskball', 'sleep', 'singing'],
+                    friends: [
+                        {id:'001', name:'wangwu'},
+                        {id: '002', name: 'xiaoer'}
+                    ]
+                }
+            },
+            methods: {
+                addSex(){
+                    Vue.set(this.student, 'sex', '男');
+                    // vm.$set(this.student, 'sex', '男')
+                },
+                addFriend(){
+                    this.student.friends.unshift({
+                        id: '004',
+                        name: 'guess'
+                    })
+                },
+                modifyName(){
+                    this.student.friends[0].name = '张三';
+                },
+                modifyHobby(){
+                    this.student.hobby.splice(0, 1, '开飞机');
+                    // this.$set(this.student.hobby, 0, '开车');
+                },
+                addHobby(){
+                    this.student.hobby.push('开轮船')
+                },
+                filterHobby(){
+                    this.student.hobby = this.student.hobby.filter((h)=> {
+                        return h !== 'singing';
+                    })
+                }
+            },
+        })
+    </script>
+</body>
+</html>

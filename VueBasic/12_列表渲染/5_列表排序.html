@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <h2>人员列表</h2>
+        <input type="text" placeholder="请输入名字" v-model="keyWord">
+        <!-- 根据输入进行数组过滤 -->
+
+        <button @click="sortType = 2">年龄升序</button>
+        <button @click="sortType = 1">年龄降序</button>
+        <button @click="sortType = 0">原顺序</button>
+
+        <ul>
+            <li v-for="(person, index) in personDispaly" :key="person.id">
+                {{person.name}} -- {{person.age}}--{{person.gender}}
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        Vue.config.productionTip = false;
+
+        const vm = new Vue({
+            el: "#root",
+            data: {
+                keyWord: '',
+                sortType: 0, //0:原顺序，1降序 2升序
+                personList:[
+                    {
+                        id: '001', 
+                        name: '马冬梅',
+                        gender: '女',
+                        age: 12 
+                    },
+                    {
+                        id: '002',
+                        name: '周冬雨',
+                        gender: '女',
+                        age: 13
+                    },
+                    {
+                        id: '003',
+                        name: '周杰伦',
+                        gender: '男',
+                        age: 19
+                    },
+                    {
+                        id: '004',
+                        name: '温兆伦',
+                        gender: '男',
+                        age: 33
+                    }
+                ]
+            },
+            computed: {
+                /* 每一次更改sortType计算属性都会重新执行，所以会回到原顺序 */
+                personDispaly(){
+                    const arr = this.personList.filter((p)=>{
+                        return p.name.indexOf(this.keyWord) !== -1;
+                    })
+
+                    // 判断是否需要排序
+                    if(this.sortType == 1){
+                        // 降序
+                        // sort改变原数组
+                        arr.sort((p1, p2) => {
+                            return p2.age - p1.age;
+                        })
+                    }else if(this.sortType == 2){
+                        arr.sort((p1, p2) => {
+                            return p1.age - p2.age;
+                        })
+                    }
+
+                    return arr;
+                }
+            }
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<template>
+    <div>
+        <li>
+            <label>
+                <input type="checkbox" :checked="todo.done" @click='handleCheck(todo.id)'/>
+                <span>{{todo.title}}</span>
+                <!-- 虽然可以实现，但不建议这个样子！【props不能修改】 -->
+                <!-- <input type="checkbox" 
+                v-model="todo.done"/>-->
+            </label>
+            <button class="btn btn-danger" @click="deleteItem(todo.id)" >删除</button>
+        </li>
+    </div>
+</template>
+
+<script>    
+export default {
+    name: 'Item',
+    data(){
+        return {
+        }
+    },
+    props:['todo', 'checkTodo', 'deleteTodo'],
+    methods: {
+        handleCheck(id){
+            //  通知APP组件将对应的done值取反
+            this.checkTodo(id)
+        },
+        deleteItem(id){
+            if(confirm('确定删除吗？')){
+                this.deleteTodo(id);
+            }
+        }
+    }
+}
+</script>
+
+<style>
+li {
+    list-style: none;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 5px;
+    border-bottom: 1px solid rgba(134, 30, 30, 0.2) !important;
+}
+
+li label {
+    float: left;
+    cursor: pointer;
+}
+
+li label li input {
+    vertical-align: middle;
+    margin-right: 6px;
+    position: relative;
+    top: -1px;
+}
+
+li button {
+    float: right;
+    display: none;
+    margin-top: 3px;
+}
+
+li:before {
+    content: initial;
+}
+
+li:last-child {
+    border-bottom: none;
+}
+
+li:hover{
+    background-color: beige;
+}
+li:hover button{
+    display: block;
+}
+</style>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../vue.js"></script>
+</head>
+<body>
+    <!--  
+        v-on:click ---》 简写 @click
+
+        v-on:click="showInfo2(66)"
+            - event搞丢了
+        v-on:click="showInfo2(66, $event)"
+            - 防止event搞丢
+    -->
+    <div id="root">
+        <h2>欢迎来到{{name}}学习</h2>
+        <button v-on:click="showInfo">点我提示信息</button>
+        <button v-on:click="showInfo2(66, $event)">信息2</button>
+    </div>
+    <script>
+        Vue.config.productionTip = false;
+
+        const vm = new Vue({
+            el: "#root",
+            data: { /* 数据代理 */
+                name: '尚硅谷'
+            },
+            methods:{
+                /* showInfo(event){
+                    console.log(event);
+
+                    // 此处的this是vm 【普通函数】
+                    console.log(this == vm);
+                    console.log('弹出信息');
+                } */
+
+                showInfo:(event) => {
+                    // 箭头函数是 window
+                    console.log(this);
+                },
+                showInfo2(number, event){
+                    console.log('info2');
+                    console.log(number);
+                    console.log(event);
+                }
+            }
+        })
+
+    </script>
+</body>
+</html>

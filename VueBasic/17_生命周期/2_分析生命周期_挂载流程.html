@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>02_lifecycle</title>
+    <script src="../vue.js"></script>
+</head> 
+<body>
+    <div id="root">
+        <h2>欢迎学习Vue:{{n}}</h2>
+        <button @click="add">点我+1</button>
+    </div>
+
+</body>
+<script>
+    Vue.config.productionTip = false;
+
+    const vm = new Vue({
+        el: "#root",
+        //template: ``, // 会完全替换掉 '#root'
+        data: {
+            n: 1
+        },
+        methods: {
+            add(){
+                this.n ++;
+            }
+        },
+        // 初始化：生命周期、事件，但数据代理未开始。
+        beforeCreate() {
+            console.log('beforecreate');
+            console.log(this);
+            // debugger;
+        },
+        // 初始化：数据监测、数据代理
+        created() {
+            console.log('created');
+        },
+        // 未经Vue编译的DOM结构；所有对DOM的操作，最终都是不奏效的
+        beforeMount() {
+            console.log('beforeMount');
+        },
+        // 经过Vue编译的DOM;初始化操作【开启定时器、发布网络请求...】。
+        mounted() {
+            console.log('mounted');
+        },
+        beforeDestroy() {
+            console.log('beforeDestroy');
+        },
+        
+    })
+</script>
+</html>

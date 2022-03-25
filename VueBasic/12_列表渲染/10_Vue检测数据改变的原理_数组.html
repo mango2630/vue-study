@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue检测数据改变的原理</title>
+    <script src="../vue.js"></script>
+</head>
+<body>
+    <!--  
+        - 没有为【数组】准备的 get & set。
+        - 数组修改：
+            1. vm._data.student.hobby[0] = 'study' 【不认！】
+            2. 必须调用数组身上可以修改数组的方法，才会承认修改。
+            3. Vue.set(vm._data.student.hobby, 1, "打台球")
+            4. Vue.$set(vm._data.student.hobby, 1, "打台球")
+        - 修改数组会调用的方法：
+            1. push()
+            2. pop()
+            3. shift()
+            4. unshift()
+            5. splice()
+            6. sort()
+            7. reverse()
+        - Vue如何检测到用了 以上方法 ？
+            - 包裹 !important
+            - vm._data.student.hobby.push === Array.prototype.push [false]
+            - 此处的push是 Vue 写的push
+                1. 先调Array.prototype.push
+                2. 重新解析模板，生成虚拟DOM...
+    -->
+    <div id="root">
+        <h2>学校名称：{{name}}</h2>
+        <h2>学校地址：{{address}}</h2>
+        <hr>
+        <h2>学生姓名：{{student.name}}</h2>
+
+        <button @click="addSex">添加性别</button>
+
+        <!-- sex没有，所以不显示 -->
+        <h2>性别：{{student.sex}}</h2> 
+
+        <h2>学生年龄：{{student.age.rAge}}--{{student.age.sAge}}</h2>
+        <h3>朋友们</h3>
+        <ul>
+            <li v-for="f in student.friends" :key="f.id">{{f.name}}</li>
+        </ul>
+
+        <hr>
+        <h2>爱好</h2>
+        <ul>
+            <li v-for="(f, index) in student.hobby" :key="index">{{f}}</li>
+        </ul>
+    </div>
+
+    <script>
+        Vue.config.productionTip = false;
+
+        const vm = new Vue({
+            el: "#root",
+            data: {
+                name: '尚硅谷',
+                address: '北京',
+                student: {
+                    name: 'tom',
+                    age: {
+                        rAge: 40,
+                        sAge: 20
+                    },
+                    hobby: ['baskball', 'sleep', 'singing'],
+                    friends: [
+                        {id:'001', name:'wangwu'},
+                        {id: '002', name: 'xiaoer'}
+                    ]
+                }
+            },
+            methods: {
+                addSex(){
+                    Vue.set(this.student, 'sex', 'nv1');
+                }
+            },
+        })
+    </script>
+</body>
+</html>

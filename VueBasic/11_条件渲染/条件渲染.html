@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../vue.js"></script>
+</head>
+<body>
+<!--  
+    条件渲染：
+        1. v-if
+            适用于：切换频率较低的场景
+            特点：不展示的DOM元素直接被移除
+            注意：v-if v-else-if v-else一起使用，结构不能被打断
+        2. v-show
+            不展示DOM元素未被溢出，仅仅是使用样式隐藏掉。
+        3. 备注：使用v-if时，元素可能无法获取到，而使用v-show一定可以获取到。
+-->
+
+
+
+    <!--  
+        变化频率高：用v-show
+        反之 v-if
+    -->
+    <div id="root">
+        <!--  
+            v-show做条件渲染 底层实现，调整display:none。
+        -->
+        <h1 v-show="true">欢迎来到{{name}}</h1>
+        <hr>
+
+        <!--  
+            v-if做条件渲染
+            彻底无了...
+        -->
+        <h1 v-if="false">欢迎来到{{name}}</h1>
+        <hr>
+        <br>
+
+        <h2>当前的值是{{n}}</h2>
+        <button @click="n ++">点我+1</button>
+        <div v-if="n == 1">angular</div>
+        <div v-if="n == 2">react</div>
+        <div v-if="n == 3">vue</div>
+
+        <hr><br>
+        <!--  
+            v-if
+            v-else-if
+            v-else
+            效率高点，因为不会多判断。
+        -->
+        <div v-if="n == 1">angular</div>
+        <div v-else-if="n == 2">react</div>
+        <div v-else-if="n == 3">vue</div>
+        <div v-else>哈哈哈哈哈哈</div>
+
+
+        <!--  
+            template 避免对结构的破坏
+                - 只能配合v-if
+                - 不能配合v-show
+        -->
+        <template v-if="n == 1">
+            <h2>北京</h2>
+            <h2>上海</h2>
+        </template>
+    </div>
+    
+    <script>
+        Vue.config.productionTip = false;
+
+        const vm = new Vue({
+            el: "#root",
+            data: {
+                name: '尚硅谷',
+                n: 0
+            }
+        })
+
+    </script>
+</body>
+</html>

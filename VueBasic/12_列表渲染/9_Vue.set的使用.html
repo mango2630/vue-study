@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue检测数据改变的原理</title>
+    <script src="../vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <h2>学校名称：{{name}}</h2>
+        <h2>学校地址：{{address}}</h2>
+        <hr>
+        <h2>学生姓名：{{student.name}}</h2>
+
+        <button @click="addSex">添加性别</button>
+
+        <!-- sex没有，所以不显示 -->
+        <h2>性别：{{student.sex}}</h2> 
+
+        <h2>学生年龄：{{student.age.rAge}}--{{student.age.sAge}}</h2>
+        <h3>朋友们</h3>
+        <ul>
+            <li v-for="f in student.friends" :key="f.id">{{f.name}}</li>
+        </ul>
+    </div>
+
+    <script>
+        Vue.config.productionTip = false;
+
+        // 只能给data 里边的某一个对象上加属性，不能直接给data加属性 ！important
+        /* Vue.set(target, key, val) */
+        /* Vue.set(vm._data.student, 'sex', '男') */
+
+        /* vm.$set(vm._data.student, 'sex', '女') */
+
+        const vm = new Vue({
+            el: "#root",
+            data: {
+                name: '尚硅谷',
+                address: '北京',
+                student: {
+                    name: 'tom',
+                    age: {
+                        rAge: 40,
+                        sAge: 20
+                    },
+                    friends: [
+                        {id:'001', name:'wangwu'},
+                        {id: '002', name: 'xiaoer'}
+                    ]
+                }
+            },
+            methods: {
+                addSex(){
+                    Vue.set(this.student, 'sex', 'nv1');
+                }
+            },
+        })
+    </script>
+</body>
+</html>

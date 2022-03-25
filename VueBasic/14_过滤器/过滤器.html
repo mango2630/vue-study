@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>过滤器</title>
+    <script src="../vue.js"></script>
+    <script src="../dayjs.min.js"></script>
+</head>
+<body>
+    <!--  
+        bootcdn.cn:
+            - moment.js
+            - dayjs[轻量级]
+        过滤器定义：
+            对要显示的数据进行特定格式化后在显示（适用于一些简单逻辑的处理）
+        使用过滤器：
+            - {{xxx | 过滤器名}}
+            - v-bind:属性 = 'xxx | 过滤器名'
+        注册过滤器：
+            - Vue.filter()
+            - new Vue({filters:{}})
+        备注：
+            1. 过滤器也可以接收额外参数、多个过滤器可以串联。
+            2. 并没有改变原本的数据，是产生新的对应的数据。
+    -->
+    <div id="root">
+        <h3>显示格式化后的时间</h3>
+        <h5>现在是：{{time}}</h5>
+
+        <!-- 计算属性实现 -->
+        <h5>格式化后：{{fmtTime}}</h5>
+
+        <!-- methods实现 -->
+        <h5>格式化后：{{getTime()}}</h5>
+
+        <!-- 过滤器实现 -->
+        <h5>过滤器实现：{{time | timeFormater}}</h5>
+
+        <!-- 过滤器【传参】实现 -->
+        <h5>过滤器实现2：{{time | timeFormater2('YYYY_MM_DD')}}</h5>
+
+        <!-- 多个过滤器 -->
+        <h5>过滤器实现2：{{time | timeFormater2('YYYY_MM_DD') | mySlice}}</h5>
+
+        <!--  
+            v-bind √，可以用过滤器
+            v-model ×，不能用
+        -->
+        <!-- 过滤器的骚操作 -->
+        <h3 :x="msg | name"> hello world</h3>
+        <h3>{{msg | name}}</h3>
+    </div>
+
+    <script>
+        Vue.config.productionTip = false;
+        // 全局过滤器
+        Vue.filter('name', function(value){
+            return value.slice(0, 4);
+        })
+
+        const vm = new Vue({
+            el: "#root",
+            data: {
+                time: 1644482170894, // 时间戳,
+                msg: '花好月圆夜'
+            },
+            computed: {
+                fmtTime(){
+                    return dayjs(this.time).format('YYYY-MM-DD HH:mm:ss')
+                }
+            },
+            methods: {
+                getTime(){
+                    return dayjs(this.time).format('YYYY-MM-DD HH:mm:ss')
+                }
+            },  
+            filters: {/* 局部过滤器 */
+                timeFormater(value){
+                    return dayjs(value).format('YYYY/MM/DD HH:mm:ss')
+                },
+                timeFormater2(value, str='YYYY|MM|DD HH:mm:ss'){
+                    return dayjs(value).format(str)
+                },
+                mySlice(value){
+                    return value.slice(0, 4)
+                }
+            }    
+        })
+    </script>
+</body>
+</html>

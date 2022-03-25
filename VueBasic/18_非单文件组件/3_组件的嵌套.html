@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>非单文件组件</title>
+    <script src="../vue.js"></script>
+</head> 
+<body>
+    <div id="root">
+        <!-- <app></app> -->
+        
+    </div>
+</body>
+<script>
+    Vue.config.productionTip = false;
+
+    /*  
+        创建组件 -> 注册组件 -> 使用组件
+    */
+
+
+    // 创建 student 组件
+    const student = Vue.extend({
+        template: `
+            <div>
+                <h3>学生姓名:{{studentName}}</h3>
+                <h3>学生年龄：{{studentAge}}</h3>
+            </div>
+        `,
+        data(){
+            return {
+                studentName: 'Danny',
+                studentAge: 12,
+            }
+        }
+    })
+
+    // 创建 school 组件
+    const school = Vue.extend({
+        template: `
+            <div>
+                <h3>学校名称：{{schoolName}}</h3>
+                <h3>学校地址：{{schollAddress}}</h3>
+                <student></student>
+            </div>
+        `,
+        data(){
+            return {
+                schoolName: '西安xx大学',
+                schollAddress: '西安',
+            }
+        },
+        components: {
+            student
+        }
+    })
+
+    
+    // 创建 hello  组件
+    const hello = Vue.extend({
+        template:`
+            <div>
+                <h3>hello, 你好啊 {{msg}}</h3>
+            </div>
+        `, 
+        data(){
+            return {
+                msg: '欢迎学习'
+            }
+        }
+    })
+
+    // 定义 app 组件
+    const app = Vue.extend({
+        template:`
+            <div>
+                <hello></hello>
+                <school></school>
+            </div>
+        `,
+        components: {
+            school,
+            hello
+        }
+    })
+
+    const vm = new Vue({
+        el: "#root",
+        template: `<app></app>`,
+        components:{ /* 注册组件 & 局部注册 */
+            app
+        }
+    })
+</script>
+</html>

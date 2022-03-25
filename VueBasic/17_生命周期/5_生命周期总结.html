@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>05_lifecycle</title>
+    <script src="../vue.js"></script>
+</head> 
+<body>
+    <div id="root">
+        <h2 :style="{opacity}">欢迎学习Vue</h2>
+        <button @click="setOpacity">透明度设置为1</button>
+        <button @click="stopChange">点我停止变换</button>
+    </div>
+
+</body>
+<script>
+    Vue.config.productionTip = false;
+
+    const vm = new Vue({
+        el: "#root",
+        data: {
+            opacity: 1,
+            val: ''
+        },
+        methods: {
+            stopChange(){
+                // clearInterval(this.val);
+                this.$destroy();
+            },
+            setOpacity(){
+                this.opacity = 1;
+                clearInterval(this.val);
+            }
+        },
+        mounted() {
+            this.val = setInterval(() => {
+                this.opacity -= 0.01;
+                if(this.opacity <= 0){
+                    this.opacity = 1;
+                }
+            }, 10);
+        },
+        beforeDestroy() {
+            clearInterval(this.val);
+        },
+    })
+</script>
+</html>

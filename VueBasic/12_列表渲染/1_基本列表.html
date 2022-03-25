@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../vue.js"></script>
+</head>
+<body>
+    <!--  
+        v-for遍历：
+            - 遍历数组
+            - 遍历对象
+            - 遍历字符串
+            - 遍历指定次数
+    -->
+    <div id="root">
+        <!-- 遍历数组 -->
+        <h2>人员列表</h2>
+        <ul>
+            <li v-for="person in personList" :key="person.id">
+                {{person.name}} -- {{person.age}}--{{person.id}}
+            </li>
+        </ul>
+        <hr>
+        <ul>
+            <li v-for="(person, index) in personList" :key="index">
+                {{person.name}} -- {{person.age}}--{{index}}
+            </li>
+        </ul>
+        <hr>
+
+        <!-- 遍历对象 -->
+        <h2>汽车信息</h2>
+        <ul>
+            <li v-for="(car, index) of carInfo" :key="index">
+                {{car}}--{{index}}
+            </li>
+        </ul>
+        <hr>
+
+        <!-- 遍历字符串 -->
+        <ul>
+            <li v-for="(s, index) of str" :key="index">
+                {{s}}--{{index}}
+            </li>
+        </ul>
+        <hr>
+
+        <!-- 遍历指定次数 -->
+        <ul>
+            <li v-for="(number, index) of 5" ::key="index">
+                {{a}} -- {{b}}
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        Vue.config.productionTip = false;
+
+        const vm = new Vue({
+            el: "#root",
+            data: {
+                personList:[
+                    {
+                        id: 001,
+                        name: 'zhangsan',
+                        age: 12
+                    },
+                    {
+                        id: 002,
+                        name: 'LiSi',
+                        age: 13
+                    },
+                    {
+                        id: 004,
+                        name: 'WangWu',
+                        age: 19
+                    }
+                ],
+                carInfo: {
+                    name: 'Audi',
+                    color: 'red',
+                    price: 123,
+                },
+                str: 'hello'
+            }
+        })
+    </script>
+</body>
+</html>

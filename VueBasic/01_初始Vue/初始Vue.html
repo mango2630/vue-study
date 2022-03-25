@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 引入vue -->
+    <script src="../vue.js"></script>
+</head>
+<body>
+    <!-- 容器与Vue实例之间的关系 一一对应  -->
+    <!-- {{js表达式}} -->
+    <!-- 
+        js表达式 与 js语句：
+            - 一个表达式会生成一个值，可以放在任何需要值的地方。
+            - 语句控制代码的走向。
+    -->
+
+    <!-- 准备好一个容器 -->
+    <div id="root">
+        <h1>Hello {{name}} </h1>
+    </div>
+
+    <script type="text/javascript">
+        Vue.config.productionTip = false; // 组织 vue 在启动时生成生产提示。
+
+        // 创建Vue实例，传入配置对象
+        new Vue({
+            el: "#root", // 用于指定当前Vue实例为那个容器服务
+            data: { // 存储数据
+                name: 'world'
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../vue.js"></script>
+</head>
+<body>
+    <!--  
+        【视频看内容】
+        key的工作原理：
+            - 新虚拟DOM与旧虚拟DOM对比。
+        虚拟DOM的对比算法：
+
+        - 对数据进行了破坏顺序的操作，会出现问题。
+        - 对数据进行了破坏顺序的操作，效率会变低。
+    -->
+    <div id="root">
+        <h2>人员列表</h2>
+        <button @click.once="addPerson">添加一个老刘</button>
+        <ul>
+            <li v-for="(person, index) in personList" :key="person.id">
+                {{person.name}} -- {{person.age}}--{{index}}--{{person.id}}
+                <input type="text">
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        Vue.config.productionTip = false;
+
+        const vm = new Vue({
+            el: "#root",
+            data: {
+                personList:[
+                    {
+                        id: '001',
+                        name: 'zhangsan',
+                        age: 12
+                    },
+                    {
+                        id: '002',
+                        name: 'LiSi',
+                        age: 13
+                    },
+                    {
+                        id: '003',
+                        name: 'WangWu',
+                        age: 19
+                    }
+                ]
+            },
+            methods: {
+                addPerson(){
+                    const p = {id: '004', name:'老刘', age:33};
+                    this.personList.unshift(p);
+                }
+            },
+        })
+    </script>
+</body>
+</html>
