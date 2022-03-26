@@ -1,42 +1,57 @@
 <template>
-    <div>
-        <div class="row">
-            <!-- 一般组件 -->
-            <Banner />
-        </div>
-        <div class="row">
-            <div class="col-xs-2 col-xs-offset-2">
-                <!-- 路由组件 -->
-                <div class="list-group">
-                    <!-- Vue中借助router-link标签实现路由的切换 -->
-                    <router-link class="list-group-item" active-class="active" to="/about">About</router-link> 
-                    
-                    <router-link class="list-group-item" active-class="active" to="/home">Home</router-link>                              
-                </div>
-            </div>
-            <div class="col-xs-6">
-                <div class="panel">
-                    <div class="panel-body">
-                        <!-- 指定组件呈现的位置 -->
-                        <router-view></router-view>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container">
+        <!-- 作用域插槽：使用者没有数据的时候使用 -->
+
+        <!-- 无序列表 -->
+        <Category title="游戏">
+            <template scope="item">
+                {{item}}
+                <ul>
+                    <li v-for="(item, index) in item.games" :key="index">{{item}}</li>
+                </ul>
+            </template>
+        </Category>
+        
+        <!-- 有序列表 -->
+        <Category title="游戏">
+            <template scope="item">
+                <!--  {{item}} -->
+                <ol>
+                    <li v-for="(item, index) in item.games" :key="index">{{item}}</li>
+                </ol>
+                <h4>{{item.msg}}</h4>
+            </template>
+        </Category>
+
+        <!-- h4标题 -->
+        <Category title="游戏">
+            <!-- 解构赋值 -->
+            <template scope="{games}">
+                <!--  {{item}} -->
+                <h4 v-for="(item, index) in games" :key="index">{{item}}</h4>
+            </template>
+        </Category>
     </div>
 </template>
 
 <script>
-import Banner from './components/Banner'
+import Category from './components/Category'
 export default {
     name: 'App',
     components: {
-        Banner
-    },
-    
+        Category
+    }
 }
 </script>
 
 <style>
-
+.container, .foot{
+    display: flex;
+    justify-content: space-around;
+}
+img, video{
+    width: 150px;
+    display: block;
+    margin: 0px auto;
+}
 </style>

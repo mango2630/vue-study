@@ -605,20 +605,20 @@ localStorage.clear();
 
 ---
 
-### 11. 插槽 slot ？？？
+### 11. 插槽 slot 
 
 让父组件向子组件指定位置插入html结构，也是一种组件间通信方式。
 
 - 默认插槽
-
 - 具名插槽
-
 - 作用域插槽
+
+---
 
 - 数据在组件(定义插槽)的自身,但根据数据生成的结构需要组件的使用者来决定。
 - 插槽内容是在父组件中编译后, 再传递给子组件的
 
-
+---
 
 ## 三、VUEX
 
@@ -690,6 +690,48 @@ const vm = new Vue({
 })
 ~~~
 
+### 1. mapState & mapGetters
+
+~~~ js
+computed:{
+    /* sum(){
+            return this.$store.state.sum;
+        }, */
+    /* school(){
+            return this.$store.state.school;
+        }, */
+
+    // 借助mapState生成计算属性，从state中读取数据。[对象写法]
+    ...mapState({sum: 'sum', 
+                 school: 'school', 
+                 subject:'subject'}),
+
+        // 借助mapState生成计算属性，从state中读取数据。[数组写法]
+        // ...mapState(['sum', 'school', 'subject']),
+
+        /* bigSum(){
+            return this.$store.state.bigSum;
+        } */
+        ...mapGetters({bigSum: 'bigSum'})
+    // ...mapGetters(['bigSum'])
+},
+~~~
+
+### 2. mapActions & mapMutations
+
+~~~ js
+// 借助mapMutations生成对应的方法，方法中会调用commit去联系mutations !!!!!
+...mapMutations({
+    JIA: 'JIA',
+    decrement: 'JIAN'
+}),
+
+// mapActions !!!!
+...mapActions({
+    incrementOdd: 'jiaOdd'
+})
+~~~
+
 
 
 ## 四、Vue-router
@@ -757,30 +799,346 @@ const vm = new Vue({
 
 ### 2. 编程式路由导航 & 声明式路由导航
 
+- params ——props
+
+~~~ js
+path: 'message',
+    component: Message,
+        children: [
+            {
+                /* :占位符 */
+                /* params参数需要占位！！！ */
+                name: 'xiangqing',
+                path: 'detail/:id/:title',
+                component: Detail,
+
+                // props的第一种写法，值为对象
+                // 该对象中的所有key-value都会以props的形式传给Detail组件。
+                /* props: {
+                                a: 1, 
+                                b: 'hello'
+                            } */
+
+                // props第二种写法，值为布尔值
+                // 若布尔值为真，就会把该路由组件收到的所有params参数，以props的形式传给Detail组件。
+                props: true
+            }]
+~~~
+
+- query —— props
+
+~~~ js
+name: 'xiangqing',
+    path: 'detail',
+        component: Detail,
+
+            // props的第一种写法，值为对象
+            // 该对象中的所有key-value都会以props的形式传给Detail组件。
+            /* props: {
+                                a: 1, 
+                                b: 'hello'
+                            } */
+
+            // props第二种写法，值为布尔值
+            // 若布尔值为真，就会把该路由组件收到的所有params参数，以props的形式传给Detail组件。
+            // props: true
 
 
-### 3. 缓存路由组件
+            // props第三种写法，值为函数
+            props($route){
+            // this---->undefined
+
+            // console.log($route);
+            return {
+                id: $route.query.id,
+                title: $route.query.title
+            }
+        }
+}
+~~~
 
 
 
-### 4. 路由钩子
+### 4. router-link的 replace属性
+
+1. 浏览器默认为push
+
+2. 可以修改为repalce 记录
+
+~~~ js
+<router-link replace class="list-group-item" active-class="active" to="/about">About</router-link> 
+~~~
+
+### 5. 缓存路由组件
+
+~~~ vue	
+<ul class="nav nav-tabs">
+    <li>
+        <router-link class="list-group-item" active-class="active" to="/home/news">News</router-link>
+    </li>
+    <li>
+        <router-link class="list-group-item" active-class="active" to="/home/message">Message</router-link>
+    </li>
+</ul>
+
+<!-- 避免走销毁路程！！！！ -->
+<!-- 加入include, 只保持News！！，其余message正常销毁 -->
+<keep-alive include="News">
+    <router-view></router-view>
+</keep-alive>
+
+<keep-alive :include="['News', 'Message']">
+    <router-view></router-view>
+</keep-alive>
+~~~
+
+
+
+### 6. 路由钩子
 
 - actived
 - deactived
 
+~~~ js
+// 路由组件独有！！！   
+activated(){
+    console.log('News组件被激活');
+    this.timer = setInterval(()=>{
+        this.opacity -= 0.01;
+        if(this.opacity <= 0){
+            this.opacity = 1;
+        }
+    }, 18)
+},
+deactivated(){
+     console.log('News组件失活');
+     clearInterval(this.timer);
+}
+~~~
+
+### 7. 路由守卫
+
+#### 7.1 全局路由守卫
+
+~~~ js
+// 全局前置路由守卫————初始化的时候被调用、每次路由切换之前被调用
+router.beforeEach((to, from, next)=>{
+    console.log(to, from);
+    console.log('前置路由守卫');
+
+    // 设置title
+    // document.title = to.meta.title || '硅谷系统'
+
+    if(to.meta.isAuth){
+        if(localStorage.getItem('school') === 'atguigu'){
+            next();
+        }
+    }else{
+        next()
+    }
+})
+
+~~~
+
+~~~ js
+// 全局后置路由守卫————初始化的时候被调用、每次路由切换之后被调用
+// 后置路由守卫
+router.afterEach((to, from)=>{
+    console.log('后置路由守卫');
+    console.log(to, from);
+    document.title = to.meta.title || '硅谷系统'
+})
+~~~
+
+#### 7.2 路由独享守卫
+
+~~~ js
+routes: [
+    {
+        path: '/foo',
+        component: Foo,
+        beforeEnter: (to, from, next) => {
+            // ...
+        }
+    }
+]
+~~~
 
 
-### 5. 路由守卫
 
+#### 7.3 组件内路由守卫
 
+~~~ js
+beforeRouteEnter(to, from, next) {
+    // 在渲染该组件的对应路由被 confirm 前调用
+    // 不！能！获取组件实例 `this`
+    // 因为当守卫执行前，组件实例还没被创建
+  },
+  beforeRouteUpdate(to, from, next) {
+    // 在当前路由改变，但是该组件被复用时调用
+    // 举例来说，对于一个带有动态参数的路径 /foo/:id，在 /foo/1 和 /foo/2 之间跳转的时候，
+    // 由于会渲染同样的 Foo 组件，因此组件实例会被复用。而这个钩子就会在这个情况下被调用。
+    // 可以访问组件实例 `this`
+  },
+  beforeRouteLeave(to, from, next) {
+    // 导航离开该组件的对应路由时调用
+    // 可以访问组件实例 `this`
+  }
+~~~
 
+---
 
+### 8. 滚动行为
+
+使用前端路由，当切换到新路由时，想要页面滚到顶部，或者是保持原先的滚动位置，就像重新加载页面那样。 `vue-router` 能做到，而且更好，它让你可以自定义路由切换时页面如何滚动。
+
+~~~ js
+const router = new VueRouter({
+  routes: [...],
+  scrollBehavior (to, from, savedPosition) {
+    // return 期望滚动到哪个的位置
+     return { x: 0, y: 0 }
+  }
+})
+~~~
+
+### 9. 路由懒加载
+
+~~~ js
+const Foo = () => import('./Foo.vue')
+~~~
+
+~~~ js
+const router = new VueRouter({
+  routes: [{ path: '/foo', component: Foo }]
+})
+~~~
+
+---
+
+### 10. history & hash
+
+- /#/xx/xxx/，#后边的不会被发送 【hash值】
+
+- history模式，不带 #
+
+---
 
 ## 五、VUE3
 
+### 1.性能的提升
 
+- 打包大小减少41%
 
+- 初次渲染快55%, 更新渲染快133%
 
+- 内存减少54%
+
+  ......
+
+### 2.源码的升级
+
+- 使用Proxy代替defineProperty实现响应式
+
+- 重写虚拟DOM的实现和Tree-Shaking
+
+  ......
+
+### 3.拥抱TypeScript
+
+- Vue3可以更好的支持TypeScript
+
+### 4.新的特性
+
+1. Composition API（组合API）
+
+   - setup配置
+   - ref与reactive
+   - watch与watchEffect
+   - provide与inject
+   - ......
+2. 新的内置组件
+   - Fragment 
+   - Teleport
+   - Suspense
+3. 其他改变
+
+   - 新的生命周期钩子
+   - data 选项应始终被声明为一个函数
+   - 移除keyCode支持作为 v-on 的修饰符
+   - ......
+
+---
+
+###  5. ref函数
+
+- 作用: 定义一个响应式的数据
+- 语法: ```const xxx = ref(initValue)``` 
+  - 创建一个包含响应式数据的<strong style="color:#DD5145">引用对象（reference对象，简称ref对象）</strong>。
+  - JS中操作数据： ```xxx.value```
+  - 模板中读取数据: 不需要.value，直接：```<div>{{xxx}}</div>```
+- 备注：
+  - 接收的数据可以是：基本类型、也可以是对象类型。
+  - 基本类型的数据：响应式依然是靠``Object.defineProperty()``的```get```与```set```完成的。
+  - 对象类型的数据：内部 <i style="color:gray;font-weight:bold">“ 求助 ”</i> 了Vue3.0中的一个新函数—— ```reactive```函数。
+
+---
+
+### 6. reactive函数
+
+- 作用: 定义一个<strong style="color:#DD5145">对象类型</strong>的响应式数据（基本类型不要用它，要用```ref```函数）
+- 语法：```const 代理对象= reactive(源对象)```接收一个对象（或数组），返回一个<strong style="color:#DD5145">代理对象（Proxy的实例对象，简称proxy对象）</strong>
+- reactive定义的响应式数据是“深层次的”。
+- 内部基于 ES6 的 Proxy 实现，通过代理对象操作源对象内部数据进行操作。
+
+~~~ js
+setup() {
+    // 数据
+    let name = ref('张三');
+    let age = ref(18);
+
+    /* object:objectDefineProperty--->reactive:proxy(es6新提出的) */
+    let job = reactive({
+        type: 'web 工程师',
+        salary: '20k',
+        a:{
+            b:{
+                c:333
+            }
+        }
+    })
+    let hobby = reactive(['smoke', 'game', 'sing'])
+
+    // 方法
+    function changeInfo(){
+        console.log(job);
+
+        // ref 处理 基本数据类型
+        name.value = 'Denny';
+        age.value = 12;
+
+        // reactive处理对象类型
+        job.type = 'UI设计师';
+        job.salary = '18k';
+        job.a.b.c = 111;
+
+        // reactive处理数组
+        console.log(hobby);
+        hobby[0] = '学习'
+    }
+
+    // 返回一个对象[常用！！]
+    return {
+        name,
+        age,
+        job,
+        hobby,
+        changeInfo
+    }
+
+~~~
+
+…..
 
 ## 六、面试题整理
 
@@ -827,3 +1185,31 @@ const vm = new Vue({
 
 - dayjs 格式化时间。
 - 
+
+
+
+## 八、vite
+
+官方文档：https://v3.cn.vuejs.org/guide/installation.html#vite
+
+vite官网：https://vitejs.cn
+
+- 什么是vite？—— 新一代前端构建工具。
+- 优势如下：
+  - 开发环境中，无需打包操作，可快速的冷启动。
+  - 轻量快速的热重载（HMR）。
+  - **真正的按需编译，不再等待整个应用编译完成。**
+- 传统构建 与 vite构建对比图
+
+<img src="https://cn.vitejs.dev/assets/bundler.37740380.png" style="width:500px;height:280px;float:left" /><img src="https://cn.vitejs.dev/assets/esm.3070012d.png" style="width:480px;height:280px" />
+
+```bash
+## 创建工程
+npm init vite-app <project-name>
+## 进入工程目录
+cd <project-name>
+## 安装依赖
+npm install
+## 运行
+npm run dev
+```
